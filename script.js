@@ -1,7 +1,6 @@
-// API Key for OpenWeatherMap (replace with your own key)
-const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
- // Replace with your actual API key
-const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}';
+// Replace with your actual OpenWeatherMap API key
+const API_KEY = 'your_api_key_here';
+const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
 
 // DOM Elements
 const searchForm = document.getElementById('searchForm');
@@ -10,6 +9,7 @@ const currentWeather = document.getElementById('currentWeather');
 const loadingSpinner = document.getElementById('loadingSpinner');
 const errorMessage = document.getElementById('errorMessage');
 const themeToggle = document.getElementById('themeToggle');
+const toggleUnit = document.getElementById('toggleUnit');
 
 // Weather data elements
 const cityName = document.getElementById('cityName');
@@ -21,6 +21,9 @@ const feelsLike = document.getElementById('feelsLike');
 const humidity = document.getElementById('humidity');
 const windSpeed = document.getElementById('windSpeed');
 const lastUpdated = document.getElementById('lastUpdated');
+
+// Store original temperature in Celsius for unit conversion
+let currentTempC = null;
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', function() {
@@ -44,6 +47,7 @@ searchForm.addEventListener('submit', function(e) {
 });
 
 themeToggle.addEventListener('click', toggleTheme);
+toggleUnit.addEventListener('click', toggleTemperatureUnit);
 
 // Toggle Theme
 function toggleTheme() {
@@ -72,7 +76,7 @@ function fetchWeatherByCity(city) {
     fetch(`${BASE_URL}?q=${city}&units=metric&appid=${API_KEY}`)
         .then(response => {
             if (!response.ok) {
-                throw new Error('City not found');
+                throw new Error('City not found. Please try another location.');
             }
             return response.json();
         })
@@ -90,22 +94,25 @@ function displayWeatherData(data) {
     loadingSpinner.classList.add('d-none');
     currentWeather.classList.remove('d-none');
     
+    // Store temperature in Celsius for unit conversion
+    currentTempC = data.main.temp;
+    
     // Update DOM elements
-    cityName.textContent = `${data.name}, ${data.sys.country}`;
-    tempValue.textContent = Math.round(data.main.temp);
+    cityName.textContent = `${data.name}, ${data.sys.country || ''}`;
+    tempValue.textContent = Math.round(currentTempC);
     weatherDescription.textContent = data.weather[0].description;
     feelsLike.textContent = `${Math.round(data.main.feels_like)}°C`;
     humidity.textContent = `${data.main.humidity}%`;
-    windSpeed.textContent = `${data.wind.speed} m/s`;
+    windSpeed.textContent = `${(data.wind.speed * 3.6).toFixed(1)} km/h`; // Convert m/s to km/h
     
     // Update weather icon
     const iconCode = data.weather[0].icon;
-    weatherIcon.src = `https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}`;
+    weatherIcon.src = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
     weatherIcon.alt = data.weather[0].main;
     
     // Update last updated time
     const now = new Date();
-    lastUpdated.textContent = now.toLocaleTimeString();
+    lastUpdated.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     
     // Update background based on weather
     updateWeatherBackground(data.weather[0].main.toLowerCase());
@@ -116,7 +123,7 @@ function updateWeatherBackground(weatherCondition = '') {
     // Remove all weather background classes
     const weatherClasses = [
         'clear-sky', 'few-clouds', 'scattered-clouds', 'broken-clouds',
-        'shower-rain', 'rain', 'thunderstorm', 'snow', 'mist'
+        'shower-rain', 'rain', 'thunderstorm', 'snow', 'mist', 'fog', 'haze'
     ];
     
     weatherClasses.forEach(cls => {
@@ -134,13 +141,16 @@ function updateWeatherBackground(weatherCondition = '') {
         'thunderstorm': 'thunderstorm',
         'snow': 'snow',
         'mist': 'mist',
-        'fog': 'mist',
-        'haze': 'mist'
+        'fog': 'fog',
+        'haze': 'haze'
     };
     
     // Add the appropriate class
     if (weatherCondition && weatherMap[weatherCondition]) {
         document.body.classList.add(weatherMap[weatherCondition]);
+    } else if (weatherCondition) {
+        // Fallback for unknown conditions
+        document.body.classList.add('clear-sky');
     }
 }
 
@@ -157,14 +167,18 @@ function celsiusToFahrenheit(celsius) {
     return (celsius * 9/5) + 32;
 }
 
-// Toggle Temperature Unit (not implemented in UI but available for extension)
+// Toggle Temperature Unit
 function toggleTemperatureUnit() {
     if (tempUnit.textContent === '°C') {
-        const fahrenheit = celsiusToFahrenheit(parseInt(tempValue.textContent));
+        const fahrenheit = celsiusToFahrenheit(currentTempC);
         tempValue.textContent = Math.round(fahrenheit);
         tempUnit.textContent = '°F';
+        feelsLike.textContent = `${Math.round(celsiusToFahrenheit(parseFloat(feelsLike.textContent)))}°F`;
+        toggleUnit.textContent = 'Switch to °C';
     } else {
-        // We would need to store the original Celsius value to convert back
+        tempValue.textContent = Math.round(currentTempC);
         tempUnit.textContent = '°C';
+        feelsLike.textContent = `${Math.round(parseFloat(feelsLike.textContent) - 32 * 5/9)}°C`;
+        toggleUnit.textContent = 'Switch to °F';
     }
 }
