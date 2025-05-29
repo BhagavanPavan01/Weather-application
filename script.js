@@ -1,184 +1,224 @@
-// Replace with your actual OpenWeatherMap API key
-const API_KEY = 'your_api_key_here';
-const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
+// Config keys (replace with your actual keys)
+    const OPENWEATHER_API_KEY = 'YOUR_OPENWEATHERMAP_API_KEY';
 
-// DOM Elements
-const searchForm = document.getElementById('searchForm');
-const cityInput = document.getElementById('cityInput');
-const currentWeather = document.getElementById('currentWeather');
-const loadingSpinner = document.getElementById('loadingSpinner');
-const errorMessage = document.getElementById('errorMessage');
-const themeToggle = document.getElementById('themeToggle');
-const toggleUnit = document.getElementById('toggleUnit');
+    // DOM Elements
+    const searchForm = document.getElementById('searchForm');
+    const cityInput = document.getElementById('cityInput');
+    const currentWeather = document.getElementById('currentWeather');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const errorMessage = document.getElementById('errorMessage');
+    const cityNameEl = document.getElementById('cityName');
+    const weatherIconEl = document.getElementById('weatherIcon');
+    const tempValueEl = document.getElementById('tempValue');
+    const tempUnitEl = document.getElementById('tempUnit');
+    const weatherDescriptionEl = document.getElementById('weatherDescription');
+    const feelsLikeEl = document.getElementById('feelsLike');
+    const humidityEl = document.getElementById('humidity');
+    const windSpeedEl = document.getElementById('windSpeed');
+    const lastUpdatedEl = document.getElementById('lastUpdated');
+    const themeToggleBtn = document.getElementById('themeToggle');
+    const toggleUnitBtn = document.getElementById('toggleUnit');
 
-// Weather data elements
-const cityName = document.getElementById('cityName');
-const weatherIcon = document.getElementById('weatherIcon');
-const tempValue = document.getElementById('tempValue');
-const tempUnit = document.getElementById('tempUnit');
-const weatherDescription = document.getElementById('weatherDescription');
-const feelsLike = document.getElementById('feelsLike');
-const humidity = document.getElementById('humidity');
-const windSpeed = document.getElementById('windSpeed');
-const lastUpdated = document.getElementById('lastUpdated');
+    let isCelsius = true;
+    let autocomplete;
 
-// Store original temperature in Celsius for unit conversion
-let currentTempC = null;
-
-// Initialize the app
-document.addEventListener('DOMContentLoaded', function() {
-    // Check for saved theme preference
-    if (localStorage.getItem('darkMode') === 'enabled') {
-        document.body.classList.add('dark-mode');
-        themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+    function showLoading(show) {
+      if (show) {
+        loadingSpinner.classList.add('show');
+      } else {
+        loadingSpinner.classList.remove('show');
+      }
     }
-    
-    // Set default city or get user's location
-    fetchWeatherByCity('London');
-});
 
-// Event Listeners
-searchForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const city = cityInput.value.trim();
-    if (city) {
-        fetchWeatherByCity(city);
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorMessage.classList.add('show');
+      currentWeather.classList.remove('show');
     }
-});
 
-themeToggle.addEventListener('click', toggleTheme);
-toggleUnit.addEventListener('click', toggleTemperatureUnit);
-
-// Toggle Theme
-function toggleTheme() {
-    document.body.classList.toggle('dark-mode');
-    
-    if (document.body.classList.contains('dark-mode')) {
-        themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
-        localStorage.setItem('darkMode', 'enabled');
-    } else {
-        themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
-        localStorage.setItem('darkMode', 'disabled');
+    function clearError() {
+      errorMessage.classList.remove('show');
+      errorMessage.textContent = '';
     }
-    
-    // Update background based on current weather
-    updateWeatherBackground();
-}
 
-// Fetch Weather by City
-function fetchWeatherByCity(city) {
-    // Show loading spinner
-    loadingSpinner.classList.remove('d-none');
-    currentWeather.classList.add('d-none');
-    errorMessage.classList.add('d-none');
-    
-    // Fetch data from API
-    fetch(`${BASE_URL}?q=${city}&units=metric&appid=${API_KEY}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('City not found. Please try another location.');
-            }
-            return response.json();
-        })
-        .then(data => {
-            displayWeatherData(data);
-        })
-        .catch(error => {
-            showError(error.message);
-        });
-}
+    function updateBackground(weatherMain) {
+      // Remove all weather background classes first
+      document.body.classList.remove(
+        'clear-sky',
+        'few-clouds',
+        'rain',
+        'thunderstorm',
+        'snow',
+        'mist',
+      );
 
-// Display Weather Data
-function displayWeatherData(data) {
-    // Hide loading spinner and show weather data
-    loadingSpinner.classList.add('d-none');
-    currentWeather.classList.remove('d-none');
-    
-    // Store temperature in Celsius for unit conversion
-    currentTempC = data.main.temp;
-    
-    // Update DOM elements
-    cityName.textContent = `${data.name}, ${data.sys.country || ''}`;
-    tempValue.textContent = Math.round(currentTempC);
-    weatherDescription.textContent = data.weather[0].description;
-    feelsLike.textContent = `${Math.round(data.main.feels_like)}°C`;
-    humidity.textContent = `${data.main.humidity}%`;
-    windSpeed.textContent = `${(data.wind.speed * 3.6).toFixed(1)} km/h`; // Convert m/s to km/h
-    
-    // Update weather icon
-    const iconCode = data.weather[0].icon;
-    weatherIcon.src = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
-    weatherIcon.alt = data.weather[0].main;
-    
-    // Update last updated time
-    const now = new Date();
-    lastUpdated.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    
-    // Update background based on weather
-    updateWeatherBackground(data.weather[0].main.toLowerCase());
-}
+      // Map weather main to our CSS classes
+      const weatherMap = {
+        Clear: 'clear-sky',
+        Clouds: 'few-clouds',
+        Rain: 'rain',
+        Drizzle: 'rain',
+        Thunderstorm: 'thunderstorm',
+        Snow: 'snow',
+        Mist: 'mist',
+        Smoke: 'mist',
+        Haze: 'mist',
+        Dust: 'mist',
+        Fog: 'mist',
+        Sand: 'mist',
+        Ash: 'mist',
+        Squall: 'mist',
+        Tornado: 'thunderstorm',
+      };
 
-// Update Weather Background
-function updateWeatherBackground(weatherCondition = '') {
-    // Remove all weather background classes
-    const weatherClasses = [
-        'clear-sky', 'few-clouds', 'scattered-clouds', 'broken-clouds',
-        'shower-rain', 'rain', 'thunderstorm', 'snow', 'mist', 'fog', 'haze'
-    ];
-    
-    weatherClasses.forEach(cls => {
-        document.body.classList.remove(cls);
+      const className = weatherMap[weatherMain] || 'clear-sky';
+      document.body.classList.add(className);
+    }
+
+    function updateWeatherUI(data) {
+      clearError();
+      cityNameEl.textContent = `${data.name}, ${data.sys.country}`;
+      weatherDescriptionEl.textContent = data.weather[0].description;
+      weatherIconEl.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`;
+      weatherIconEl.alt = data.weather[0].description;
+
+      // Show temperature in selected unit
+      let temp = data.main.temp;
+      let feelsLike = data.main.feels_like;
+      let windSpeed = data.wind.speed;
+      let humidity = data.main.humidity;
+
+      if (!isCelsius) {
+        temp = (temp * 9) / 5 + 32;
+        feelsLike = (feelsLike * 9) / 5 + 32;
+        windSpeed = windSpeed * 2.237; // m/s to mph
+      }
+
+      tempValueEl.textContent = Math.round(temp);
+      tempUnitEl.textContent = isCelsius ? '°C' : '°F';
+      feelsLikeEl.textContent = `${Math.round(feelsLike)}${isCelsius ? '°C' : '°F'}`;
+      humidityEl.textContent = `${humidity}%`;
+      windSpeedEl.textContent = `${windSpeed.toFixed(1)} ${isCelsius ? 'm/s' : 'mph'}`;
+
+      // Last updated time
+      const now = new Date();
+      lastUpdatedEl.textContent = `Last updated: ${now.toLocaleTimeString()}`;
+
+      // Fade in weather card
+      currentWeather.classList.remove('show');
+      setTimeout(() => currentWeather.classList.add('show'), 50);
+
+      // Update background
+      updateBackground(data.weather[0].main);
+    }
+
+    async function fetchWeatherByCoords(lat, lon) {
+      showLoading(true);
+      try {
+        const response = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}&units=metric`
+        );
+        if (!response.ok) throw new Error('Weather data not found');
+        const data = await response.json();
+        showLoading(false);
+        updateWeatherUI(data);
+      } catch (error) {
+        showLoading(false);
+        showError('Could not fetch weather data. Try again.');
+        console.error(error);
+      }
+    }
+
+    async function fetchWeatherByCity(city) {
+      showLoading(true);
+      try {
+        const response = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
+            city
+          )}&appid=${OPENWEATHER_API_KEY}&units=metric`
+        );
+        if (!response.ok) throw new Error('City not found');
+        const data = await response.json();
+        showLoading(false);
+        updateWeatherUI(data);
+      } catch (error) {
+        showLoading(false);
+        showError('City not found or error fetching data.');
+        console.error(error);
+      }
+    }
+
+    // Initialize Google Places Autocomplete restricted to India
+    function initAutocomplete() {
+      autocomplete = new google.maps.places.Autocomplete(cityInput, {
+        componentRestrictions: { country: 'in' },
+        fields: ['name', 'geometry'],
+        types: ['(cities)'],
+      });
+      autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace();
+        if (!place.geometry) {
+          showError('Please select a valid place from suggestions.');
+          return;
+        }
+        clearError();
+        fetchWeatherByCoords(place.geometry.location.lat(), place.geometry.location.lng());
+      });
+    }
+
+    // Toggle dark mode
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      themeToggleBtn.setAttribute('aria-pressed', isDark);
+      themeToggleBtn.innerHTML = isDark
+        ? '<i class="fas fa-sun"></i> Light Mode'
+        : '<i class="fas fa-moon"></i> Dark Mode';
+    }
+
+    // Toggle temperature unit
+    function toggleTemperatureUnit() {
+      isCelsius = !isCelsius;
+      toggleUnitBtn.setAttribute('aria-pressed', !isCelsius);
+      toggleUnitBtn.textContent = isCelsius ? 'Switch to °F' : 'Switch to °C';
+      // Refresh weather data to update units
+      const cityText = cityNameEl.textContent.split(',')[0];
+      if (cityText) {
+        fetchWeatherByCity(cityText);
+      }
+    }
+
+    // Event listeners
+    searchForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const city = cityInput.value.trim();
+      if (!city) {
+        showError('Please enter a city or place.');
+        return;
+      }
+      clearError();
+      fetchWeatherByCity(city);
     });
-    
-    // Map OpenWeather conditions to our classes
-    const weatherMap = {
-        'clear': 'clear-sky',
-        'clouds': 'few-clouds',
-        'scattered clouds': 'scattered-clouds',
-        'broken clouds': 'broken-clouds',
-        'shower rain': 'shower-rain',
-        'rain': 'rain',
-        'thunderstorm': 'thunderstorm',
-        'snow': 'snow',
-        'mist': 'mist',
-        'fog': 'fog',
-        'haze': 'haze'
+
+    themeToggleBtn.addEventListener('click', toggleDarkMode);
+    toggleUnitBtn.addEventListener('click', toggleTemperatureUnit);
+
+    // Initialize
+    window.onload = () => {
+      initAutocomplete();
+
+      // Optional: Get current location weather on load
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            fetchWeatherByCoords(position.coords.latitude, position.coords.longitude);
+          },
+          () => {
+            // Default to Delhi if geolocation denied
+            fetchWeatherByCity('Delhi');
+          }
+        );
+      } else {
+        fetchWeatherByCity('Delhi');
+      }
     };
-    
-    // Add the appropriate class
-    if (weatherCondition && weatherMap[weatherCondition]) {
-        document.body.classList.add(weatherMap[weatherCondition]);
-    } else if (weatherCondition) {
-        // Fallback for unknown conditions
-        document.body.classList.add('clear-sky');
-    }
-}
-
-// Show Error Message
-function showError(message) {
-    loadingSpinner.classList.add('d-none');
-    currentWeather.classList.add('d-none');
-    errorMessage.classList.remove('d-none');
-    document.getElementById('errorText').textContent = message;
-}
-
-// Convert Celsius to Fahrenheit
-function celsiusToFahrenheit(celsius) {
-    return (celsius * 9/5) + 32;
-}
-
-// Toggle Temperature Unit
-function toggleTemperatureUnit() {
-    if (tempUnit.textContent === '°C') {
-        const fahrenheit = celsiusToFahrenheit(currentTempC);
-        tempValue.textContent = Math.round(fahrenheit);
-        tempUnit.textContent = '°F';
-        feelsLike.textContent = `${Math.round(celsiusToFahrenheit(parseFloat(feelsLike.textContent)))}°F`;
-        toggleUnit.textContent = 'Switch to °C';
-    } else {
-        tempValue.textContent = Math.round(currentTempC);
-        tempUnit.textContent = '°C';
-        feelsLike.textContent = `${Math.round(parseFloat(feelsLike.textContent) - 32 * 5/9)}°C`;
-        toggleUnit.textContent = 'Switch to °F';
-    }
-}

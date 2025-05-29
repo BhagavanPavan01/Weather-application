@@ -1,107 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Weather App</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_PLACES_API_KEY&libraries=places"></script>
+
+  <script src="script.js" defer></script>
 </head>
-
 <body>
-    <div class="container-fluid weather-app">
-        <div class="row justify-content-center">
-            <div class="col-lg-6 col-md-8 col-sm-10">
-                <!-- Weather Card -->
-                <div class="card weather-card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h1 class="h4 mb-0">Weather App</h1>
-                        <button id="themeToggle" class="btn btn-sm btn-outline-secondary">
-                            <i class="fas fa-moon"></i> Dark Mode
-                        </button>
-                    </div>
-                    <div class="card-body">
-                        <!-- Search Form -->
-                        <form id="searchForm" class="mb-4">
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="cityInput" placeholder="Enter city name"
-                                    required>
-                                <button class="btn btn-primary" type="submit">
-                                    <i class="fas fa-search"></i> Search
-                                </button>
-                            </div>
-                        </form>
+<div class="weather-app" aria-live="polite" aria-atomic="true">
+    <form id="searchForm" aria-label="Search for city or place">
+      <input
+        id="cityInput"
+        type="text"
+        placeholder="Search Indian places..."
+        aria-required="true"
+        autocomplete="off"
+      />
+      <button type="submit" aria-label="Search">Search</button>
+    </form>
 
-                        <!-- Current Weather -->
-                        <div id="currentWeather" class="text-center d-none">
-                            <div class="weather-icon mb-3">
-                                <img id="weatherIcon" src="" alt="Weather Icon" class="img-fluid">
-                            </div>
-                            <h2 id="cityName" class="display-4 mb-3"></h2>
-                            <div class="temperature mb-3">
-                                <span id="tempValue" class="display-1"></span>
-                                <span id="tempUnit" class="display-4 align-top">°C</span>
-                                <button id="toggleUnit" class="btn btn-sm btn-outline-secondary ms-2">Switch to °F</button>
-                            </div>
-                            <h3 id="weatherDescription" class="h3 mb-4 text-capitalize"></h3>
-
-                            <!-- Weather Details -->
-                            <div class="row weather-details">
-                                <div class="col-4">
-                                    <div class="detail-item">
-                                        <i class="fas fa-temperature-high"></i>
-                                        <span id="feelsLike"></span>
-                                        <small>Feels Like</small>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="detail-item">
-                                        <i class="fas fa-tint"></i>
-                                        <span id="humidity"></span>
-                                        <small>Humidity</small>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="detail-item">
-                                        <i class="fas fa-wind"></i>
-                                        <span id="windSpeed"></span>
-                                        <small>Wind</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Loading Spinner -->
-                        <div id="loadingSpinner" class="text-center d-none">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <p class="mt-2">Fetching weather data...</p>
-                        </div>
-
-                        <!-- Error Message -->
-                        <div id="errorMessage" class="alert alert-danger text-center d-none" role="alert">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            <span id="errorText"></span>
-                        </div>
-                    </div>
-                    <div class="card-footer text-muted text-center">
-                        <small>Last updated: <span id="lastUpdated"></span></small>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="toggles">
+      <button id="themeToggle" class="toggle-btn" aria-pressed="false" aria-label="Toggle Dark Mode">
+        <i class="fas fa-moon"></i> Dark Mode
+      </button>
+      <button id="toggleUnit" class="toggle-btn" aria-pressed="false" aria-label="Toggle Temperature Unit">
+        Switch to °F
+      </button>
     </div>
 
-    <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
-    <script src="script.js"></script>
-</body>
+    <div id="loadingSpinner" role="status" aria-live="polite">
+      <i class="fas fa-spinner fa-spin fa-3x"></i>
+    </div>
 
+    <div id="errorMessage" role="alert" aria-live="assertive"></div>
+
+    <div id="currentWeather" class="weather-card" tabindex="0" aria-label="Current weather information">
+      <h2 id="cityName"></h2>
+      <div class="weather-icon">
+        <img id="weatherIcon" src="" alt="" />
+      </div>
+      <div class="temperature">
+        <span id="tempValue"></span><span id="tempUnit">°C</span>
+      </div>
+      <div class="description" id="weatherDescription"></div>
+      <div class="details">
+        <div class="detail-item" aria-label="Feels like temperature">
+          <i class="fas fa-thermometer-half"></i>
+          <span id="feelsLike"></span>
+          <small>Feels Like</small>
+        </div>
+        <div class="detail-item" aria-label="Humidity">
+          <i class="fas fa-tint"></i>
+          <span id="humidity"></span>
+          <small>Humidity</small>
+        </div>
+        <div class="detail-item" aria-label="Wind speed">
+          <i class="fas fa-wind"></i>
+          <span id="windSpeed"></span>
+          <small>Wind Speed</small>
+        </div>
+      </div>
+      <div id="lastUpdated" style="margin-top:1rem; font-size: 0.8rem; color: #6c757d;"></div>
+    </div>
+  </div>
+
+  <!-- Google Maps Places API -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_PLACES_API_KEY&libraries=places"></script>
+  
+</body>
 </html>

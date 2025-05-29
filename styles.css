@@ -1,206 +1,244 @@
-/* Base Styles */
-body {
+  /* Base styles with fallback fonts */
+  body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
     min-height: 100vh;
     transition: background-color 0.3s, color 0.3s;
     background-color: #f8f9fa;
     color: #212529;
-    margin: 0;
-    padding: 0;
-}
-
-.weather-app {
-    padding: 2rem 0;
-    min-height: 100vh;
-    background-size: cover;
-    background-position: center;
-    transition: background-image 0.5s ease;
-}
-
-/* Weather Backgrounds */
-.clear-sky {
-    background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
-                     url('https://source.unsplash.com/1600x900/?sunny,sky');
-}
-.few-clouds {
-    background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
-                     url('https://source.unsplash.com/1600x900/?cloudy,sky');
-}
-.scattered-clouds, .broken-clouds {
-    background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
-                     url('https://source.unsplash.com/1600x900/?overcast,sky');
-}
-.shower-rain, .rain {
-    background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
-                     url('https://source.unsplash.com/1600x900/?rain,weather');
-}
-.thunderstorm {
-    background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
-                     url('https://source.unsplash.com/1600x900/?thunderstorm,lightning');
-}
-.snow {
-    background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
-                     url('https://source.unsplash.com/1600x900/?snow,winter');
-}
-.mist, .fog, .haze {
-    background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
-                     url('https://source.unsplash.com/1600x900/?fog,mist');
-}
-
-/* Dark Mode */
-.dark-mode {
-    background-color: #212529;
-    color: #f8f9fa;
-}
-
-.dark-mode .weather-card {
-    background-color: rgba(52, 58, 64, 0.9);
-    border-color: #495057;
-    color: #f8f9fa;
-}
-
-.dark-mode .form-control {
-    background-color: #495057;
-    border-color: #6c757d;
-    color: #f8f9fa;
-}
-
-.dark-mode .form-control:focus {
-    background-color: #495057;
-    color: #f8f9fa;
-    border-color: #6c757d;
-    box-shadow: 0 0 0 0.25rem rgba(108, 117, 125, 0.25);
-}
-
-.dark-mode .text-muted {
-    color: #adb5bd !important;
-}
-
-/* Dark Mode Backgrounds */
-.dark-mode.clear-sky {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-                     url('https://source.unsplash.com/1600x900/?night,stars');
-}
-.dark-mode.few-clouds {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-                     url('https://source.unsplash.com/1600x900/?night,cloudy');
-}
-.dark-mode.scattered-clouds,
-.dark-mode.broken-clouds {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-                     url('https://source.unsplash.com/1600x900/?night,overcast');
-}
-.dark-mode.shower-rain,
-.dark-mode.rain {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-                     url('https://source.unsplash.com/1600x900/?night,rain');
-}
-.dark-mode.thunderstorm {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-                     url('https://source.unsplash.com/1600x900/?night,lightning');
-}
-.dark-mode.snow {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-                     url('https://source.unsplash.com/1600x900/?night,snow');
-}
-.dark-mode.mist,
-.dark-mode.fog,
-.dark-mode.haze {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-                     url('https://source.unsplash.com/1600x900/?night,fog');
-}
-
-/* Weather Card */
-.weather-card {
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    border: none;
-    overflow: hidden;
-    background-color: rgba(255, 255, 255, 0.9);
-    transition: all 0.3s;
-    backdrop-filter: blur(5px);
-}
-
-.weather-icon img {
-    height: 100px;
-    width: 100px;
-    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
-}
-
-.temperature {
-    font-weight: 300;
     display: flex;
-    align-items: center;
     justify-content: center;
-}
+    align-items: center;
+    padding: 2rem;
+  }
 
-.weather-details {
+  /* Dark Mode */
+  body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+  }
+
+  /* Container */
+  .weather-app {
+    max-width: 400px;
+    width: 100%;
+    background-color: rgba(255 255 255 / 0.9);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 0 20px rgb(0 0 0 / 0.15);
+    backdrop-filter: blur(6px);
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+
+  body.dark-mode .weather-app {
+    background-color: rgba(33 33 33 / 0.9);
+    color: #e0e0e0;
+  }
+
+  /* Form */
+  form {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  input[type="text"] {
+    flex-grow: 1;
+    padding: 0.5rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 30px;
+    font-size: 1rem;
+    outline-offset: 2px;
+    transition: border-color 0.3s;
+  }
+  input[type="text"]:focus {
+    border-color: #0d6efd;
+    outline: none;
+  }
+
+  body.dark-mode input[type="text"] {
+    background: #495057;
+    border-color: #6c757d;
+    color: #e0e0e0;
+  }
+  body.dark-mode input[type="text"]:focus {
+    border-color: #0d6efd;
+  }
+
+  button {
+    background: #0d6efd;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 0 1rem;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: background-color 0.3s;
+  }
+  button:hover {
+    background: #084caa;
+  }
+
+  /* Toggle Buttons */
+  .toggles {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .toggle-btn {
+    background: transparent;
+    border: none;
+    color: #0d6efd;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  body.dark-mode .toggle-btn {
+    color: #6ea8fe;
+  }
+
+  /* Weather Display */
+  .weather-card {
     margin-top: 2rem;
-}
-
-.detail-item {
+    text-align: center;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .weather-card.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .weather-icon img {
+    width: 100px;
+    height: 100px;
+  }
+  .temperature {
+    font-size: 3rem;
+    font-weight: 300;
+    margin: 0.3rem 0;
+  }
+  .description {
+    text-transform: capitalize;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+  .details {
+    display: flex;
+    justify-content: space-around;
+    gap: 1rem;
+  }
+  .detail-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 0.5rem;
-}
-
-.detail-item i {
+    font-size: 0.9rem;
+  }
+  .detail-item i {
     font-size: 1.5rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
     color: #0d6efd;
-}
-
-.dark-mode .detail-item i {
+  }
+  body.dark-mode .detail-item i {
     color: #6ea8fe;
-}
+  }
 
-.detail-item span {
-    font-size: 1.2rem;
-    font-weight: 500;
-}
+  /* Loading Spinner */
+  #loadingSpinner {
+    display: none;
+    margin: 2rem auto;
+  }
+  #loadingSpinner.show {
+    display: block;
+  }
 
-.detail-item small {
-    font-size: 0.8rem;
-    color: #6c757d;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .weather-app {
-        padding: 1rem;
-    }
-    
-    .temperature {
-        font-size: 3rem;
-    }
-    
-    .weather-details {
-        margin-top: 1rem;
-    }
-    
-    .detail-item i {
-        font-size: 1.2rem;
-    }
-    
-    .detail-item span {
-        font-size: 1rem;
-    }
-}
-
-/* Loading Spinner */
-.spinner-border {
-    width: 3rem;
-    height: 3rem;
-}
-
-/* Error Message */
-.alert {
+  /* Error message */
+  #errorMessage {
+    display: none;
     margin-top: 1rem;
-}
+    color: #dc3545;
+    font-weight: 600;
+  }
+  #errorMessage.show {
+    display: block;
+  }
 
-/* Temperature Toggle Button */
-#toggleUnit {
-    font-size: 0.8rem;
-    padding: 0.25rem 0.5rem;
-}
+  /* Background classes */
+  body.clear-sky {
+    background-image: linear-gradient(rgba(255 255 255 / 0.7), rgba(255 255 255 / 0.7)),
+      url('https://source.unsplash.com/?sunny');
+    background-size: cover;
+    background-position: center;
+  }
+  body.few-clouds {
+    background-image: linear-gradient(rgba(255 255 255 / 0.7), rgba(255 255 255 / 0.7)),
+      url('https://source.unsplash.com/?cloudy');
+    background-size: cover;
+    background-position: center;
+  }
+  body.rain {
+    background-image: linear-gradient(rgba(255 255 255 / 0.7), rgba(255 255 255 / 0.7)),
+      url('https://source.unsplash.com/?rain');
+    background-size: cover;
+    background-position: center;
+  }
+  body.thunderstorm {
+    background-image: linear-gradient(rgba(255 255 255 / 0.7), rgba(255 255 255 / 0.7)),
+      url('https://source.unsplash.com/?thunderstorm');
+    background-size: cover;
+    background-position: center;
+  }
+  body.snow {
+    background-image: linear-gradient(rgba(255 255 255 / 0.7), rgba(255 255 255 / 0.7)),
+      url('https://source.unsplash.com/?snow');
+    background-size: cover;
+    background-position: center;
+  }
+  body.mist {
+    background-image: linear-gradient(rgba(255 255 255 / 0.7), rgba(255 255 255 / 0.7)),
+      url('https://source.unsplash.com/?fog');
+    background-size: cover;
+    background-position: center;
+  }
+
+  /* Dark mode backgrounds */
+  body.dark-mode.clear-sky {
+    background-image: linear-gradient(rgba(0 0 0 / 0.7), rgba(0 0 0 / 0.7)),
+      url('https://source.unsplash.com/?night,stars');
+  }
+  body.dark-mode.few-clouds {
+    background-image: linear-gradient(rgba(0 0 0 / 0.7), rgba(0 0 0 / 0.7)),
+      url('https://source.unsplash.com/?night,cloudy');
+  }
+  body.dark-mode.rain {
+    background-image: linear-gradient(rgba(0 0 0 / 0.7), rgba(0 0 0 / 0.7)),
+      url('https://source.unsplash.com/?night,rain');
+  }
+  body.dark-mode.thunderstorm {
+    background-image: linear-gradient(rgba(0 0 0 / 0.7), rgba(0 0 0 / 0.7)),
+      url('https://source.unsplash.com/?night,lightning');
+  }
+  body.dark-mode.snow {
+    background-image: linear-gradient(rgba(0 0 0 / 0.7), rgba(0 0 0 / 0.7)),
+      url('https://source.unsplash.com/?night,snow');
+  }
+  body.dark-mode.mist {
+    background-image: linear-gradient(rgba(0 0 0 / 0.7), rgba(0 0 0 / 0.7)),
+      url('https://source.unsplash.com/?night,fog');
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .weather-app {
+      padding: 1rem;
+    }
+    .temperature {
+      font-size: 2.5rem;
+    }
+    .detail-item i {
+      font-size: 1.2rem;
+    }
+  }
