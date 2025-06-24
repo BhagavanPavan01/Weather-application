@@ -1,79 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Weather App</title>
   <link rel="stylesheet" href="styles.css" />
   <!-- Font Awesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <link
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
-  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_PLACES_API_KEY&libraries=places"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <script src="script.js" defer></script>
 </head>
+
 <body>
-<div class="weather-app" aria-live="polite" aria-atomic="true">
-    <form id="searchForm" aria-label="Search for city or place">
-      <input
-        id="cityInput"
-        type="text"
-        placeholder="Search Indian places..."
-        aria-required="true"
-        autocomplete="off"
-      />
-      <button type="submit" aria-label="Search">Search</button>
-    </form>
-
-    <div class="toggles">
-      <button id="themeToggle" class="toggle-btn" aria-pressed="false" aria-label="Toggle Dark Mode">
-        <i class="fas fa-moon"></i> Dark Mode
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">
+      <i class="fas fa-cloud-sun"></i>
+      <span>WeatherSphere</span>
+    </div>
+    <div class="nav-links">
+      <a href="#" class="active">Home</a>
+      <a href="#">Forecast</a>
+      <a href="#">Maps</a>
+      <a href="#">News</a>
+    </div>
+    <div class="nav-actions">
+      <button id="themeToggle" class="toggle-btn">
+        <i class="fas fa-moon"></i>
       </button>
-      <button id="toggleUnit" class="toggle-btn" aria-pressed="false" aria-label="Toggle Temperature Unit">
-        Switch to °F
-      </button>
+      <button id="toggleUnit" class="toggle-btn">°C/°F</button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Search Section -->
+    <section class="search-section">
+      <form id="searchForm" class="search-form">
+        <input type="text" id="cityInput" class="search-input" placeholder="Search for a city..." autocomplete="off">
+        <button type="submit" class="search-btn">
+          <i class="fas fa-search"></i> Search
+        </button>
+      </form>
+    </section>
+
+    <!-- Weather Container -->
+    <div class="weather-container">
+      <!-- Current Weather Card -->
+      <div class="weather-card current-weather">
+        <div class="weather-main">
+          <h2 class="weather-location">New York, US</h2>
+          <p class="weather-date">Monday, June 3, 2023</p>
+          <div class="weather-temp">24<span>°C</span></div>
+          <img src="https://openweathermap.org/img/wn/01d@2x.png" alt="Clear sky" class="weather-icon">
+          <p class="weather-desc">Clear sky</p>
+        </div>
+        <div class="weather-details">
+          <div class="detail-item">
+            <i class="fas fa-temperature-high"></i>
+            <div>
+              <div class="detail-value">26°C</div>
+              <div class="detail-label">Feels Like</div>
+            </div>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-tint"></i>
+            <div>
+              <div class="detail-value">65%</div>
+              <div class="detail-label">Humidity</div>
+            </div>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-wind"></i>
+            <div>
+              <div class="detail-value">12 km/h</div>
+              <div class="detail-label">Wind Speed</div>
+            </div>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-compress-alt"></i>
+            <div>
+              <div class="detail-value">1012 hPa</div>
+              <div class="detail-label">Pressure</div>
+            </div>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-eye"></i>
+            <div>
+              <div class="detail-value">10 km</div>
+              <div class="detail-label">Visibility</div>
+            </div>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-sun"></i>
+            <div>
+              <div class="detail-value">06:12 AM</div>
+              <div class="detail-label">Sunrise</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5-Day Forecast -->
+      <div class="weather-card forecast-container">
+        <h3 class="forecast-title">5-Day Forecast</h3>
+        <div class="forecast-items">
+          <div class="forecast-item">
+            <div class="forecast-day">Tue</div>
+            <img src="https://openweathermap.org/img/wn/02d@2x.png" alt="Few clouds" class="forecast-icon">
+            <div class="forecast-temp">25°C</div>
+          </div>
+          <div class="forecast-item">
+            <div class="forecast-day">Wed</div>
+            <img src="https://openweathermap.org/img/wn/03d@2x.png" alt="Scattered clouds" class="forecast-icon">
+            <div class="forecast-temp">23°C</div>
+          </div>
+          <div class="forecast-item">
+            <div class="forecast-day">Thu</div>
+            <img src="https://openweathermap.org/img/wn/09d@2x.png" alt="Shower rain" class="forecast-icon">
+            <div class="forecast-temp">20°C</div>
+          </div>
+          <div class="forecast-item">
+            <div class="forecast-day">Fri</div>
+            <img src="https://openweathermap.org/img/wn/10d@2x.png" alt="Rain" class="forecast-icon">
+            <div class="forecast-temp">18°C</div>
+          </div>
+          <div class="forecast-item">
+            <div class="forecast-day">Sat</div>
+            <img src="https://openweathermap.org/img/wn/01d@2x.png" alt="Clear sky" class="forecast-icon">
+            <div class="forecast-temp">22°C</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional Weather Cards -->
+      <div class="weather-card">
+        <h3>Air Quality</h3>
+        <div class="air-quality" style="margin-top: 1rem;">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="font-size: 2rem; font-weight: bold; color: #4CAF50;">42</div>
+            <div>
+              <div style="font-weight: 600;">Good</div>
+              <div style="font-size: 0.9rem; color: #666;">Air quality is satisfactory</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="weather-card">
+        <h3>Hourly Forecast</h3>
+        <div class="hourly-forecast" style="margin-top: 1rem;">
+          <div style="display: flex; overflow-x: auto; gap: 1rem; padding-bottom: 1rem;">
+            <div style="min-width: 60px; text-align: center;">
+              <div>Now</div>
+              <img src="https://openweathermap.org/img/wn/01d@2x.png" alt="Clear" style="width: 40px; height: 40px;">
+              <div style="font-weight: 600;">24°C</div>
+            </div>
+            <div style="min-width: 60px; text-align: center;">
+              <div>1 PM</div>
+              <img src="https://openweathermap.org/img/wn/01d@2x.png" alt="Clear" style="width: 40px; height: 40px;">
+              <div style="font-weight: 600;">26°C</div>
+            </div>
+            <div style="min-width: 60px; text-align: center;">
+              <div>2 PM</div>
+              <img src="https://openweathermap.org/img/wn/01d@2x.png" alt="Clear" style="width: 40px; height: 40px;">
+              <div style="font-weight: 600;">27°C</div>
+            </div>
+            <div style="min-width: 60px; text-align: center;">
+              <div>3 PM</div>
+              <img src="https://openweathermap.org/img/wn/02d@2x.png" alt="Few clouds"
+                style="width: 40px; height: 40px;">
+              <div style="font-weight: 600;">26°C</div>
+            </div>
+            <div style="min-width: 60px; text-align: center;">
+              <div>4 PM</div>
+              <img src="https://openweathermap.org/img/wn/02d@2x.png" alt="Few clouds"
+                style="width: 40px; height: 40px;">
+              <div style="font-weight: 600;">25°C</div>
+            </div>
+            <div style="min-width: 60px; text-align: center;">
+              <div>5 PM</div>
+              <img src="https://openweathermap.org/img/wn/03d@2x.png" alt="Scattered clouds"
+                style="width: 40px; height: 40px;">
+              <div style="font-weight: 600;">24°C</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div id="loadingSpinner" role="status" aria-live="polite">
-      <i class="fas fa-spinner fa-spin fa-3x"></i>
+    <!-- Weather Animation Elements -->
+    <div class="weather-animation">
+      <div class="sun"></div>
+      <!-- Clouds will be added dynamically by JS -->
     </div>
+  </main>
 
-    <div id="errorMessage" role="alert" aria-live="assertive"></div>
-
-    <div id="currentWeather" class="weather-card" tabindex="0" aria-label="Current weather information">
-      <h2 id="cityName"></h2>
-      <div class="weather-icon">
-        <img id="weatherIcon" src="" alt="" />
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="social-links">
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin"></i></a>
       </div>
-      <div class="temperature">
-        <span id="tempValue"></span><span id="tempUnit">°C</span>
-      </div>
-      <div class="description" id="weatherDescription"></div>
-      <div class="details">
-        <div class="detail-item" aria-label="Feels like temperature">
-          <i class="fas fa-thermometer-half"></i>
-          <span id="feelsLike"></span>
-          <small>Feels Like</small>
-        </div>
-        <div class="detail-item" aria-label="Humidity">
-          <i class="fas fa-tint"></i>
-          <span id="humidity"></span>
-          <small>Humidity</small>
-        </div>
-        <div class="detail-item" aria-label="Wind speed">
-          <i class="fas fa-wind"></i>
-          <span id="windSpeed"></span>
-          <small>Wind Speed</small>
-        </div>
-      </div>
-      <div id="lastUpdated" style="margin-top:1rem; font-size: 0.8rem; color: #6c757d;"></div>
+      <p class="copyright">© 2023 WeatherSphere. All rights reserved.</p>
     </div>
-  </div>
+  </footer>
+
 
   <!-- Google Maps Places API -->
   <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places"></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_PLACES_API_KEY&libraries=places"></script>
-  
+
 </body>
+
 </html>
