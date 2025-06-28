@@ -4,12 +4,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Weather App</title>
+  <title>WeatherSphere Pro</title>
   <link rel="stylesheet" href="styles.css" />
-  <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js" defer></script>
 </head>
 
@@ -18,19 +17,23 @@
   <nav>
     <div class="logo">
       <i class="fas fa-cloud-sun"></i>
-      <span>WeatherSphere</span>
+      <span>WeatherSphere Pro</span>
     </div>
     <div class="nav-links">
-      <a href="#" class="active">Home</a>
+      <a href="#" class="active">Dashboard</a>
       <a href="#">Forecast</a>
       <a href="#">Maps</a>
-      <a href="#">News</a>
+      <a href="#">Alerts</a>
+      <a href="#">Health</a>
     </div>
     <div class="nav-actions">
       <button id="themeToggle" class="toggle-btn">
         <i class="fas fa-moon"></i>
       </button>
       <button id="toggleUnit" class="toggle-btn">°C/°F</button>
+      <button id="locationBtn" class="toggle-btn">
+        <i class="fas fa-location-arrow"></i>
+      </button>
     </div>
   </nav>
 
@@ -39,10 +42,20 @@
     <!-- Search Section -->
     <section class="search-section">
       <form id="searchForm" class="search-form">
-        <input type="text" id="cityInput" class="search-input" placeholder="Search for a city..." autocomplete="off">
-        <button type="submit" class="search-btn">
-          <i class="fas fa-search"></i> Search
-        </button>
+        <div class="search-wrapper">
+          <input type="text" id="cityInput" class="search-input" placeholder="Search for a city..." autocomplete="off">
+          <button type="submit" class="search-btn">
+            <i class="fas fa-search"></i> Search
+          </button>
+        </div>
+        <div class="search-options">
+          <button type="button" id="saveLocation" class="secondary-btn">
+            <i class="far fa-bookmark"></i> Save Location
+          </button>
+          <button type="button" id="compareBtn" class="secondary-btn">
+            <i class="fas fa-balance-scale"></i> Compare
+          </button>
+        </div>
       </form>
     </section>
 
@@ -51,11 +64,24 @@
       <!-- Current Weather Card -->
       <div class="weather-card current-weather">
         <div class="weather-main">
-          <h2 class="weather-location">New York, US</h2>
-          <p class="weather-date">Monday, June 3, 2023</p>
+          <div class="location-header">
+            <h2 class="weather-location">New York, US</h2>
+            <div class="location-actions">
+              <button class="icon-btn"><i class="far fa-bell"></i></button>
+              <button class="icon-btn"><i class="far fa-star"></i></button>
+            </div>
+          </div>
+          <p class="weather-date">Monday, June 3, 2023 • 3:45 PM</p>
           <div class="weather-temp">24<span>°C</span></div>
-          <img src="https://openweathermap.org/img/wn/01d@2x.png" alt="Clear sky" class="weather-icon">
-          <p class="weather-desc">Clear sky</p>
+          <div class="weather-icon-container">
+            <img src="https://openweathermap.org/img/wn/01d@2x.png" alt="Clear sky" class="weather-icon">
+            <p class="weather-desc">Clear sky</p>
+          </div>
+          <div class="weather-extras">
+            <span class="extra-item"><i class="fas fa-arrow-up"></i> H:26°</span>
+            <span class="extra-item"><i class="fas fa-arrow-down"></i> L:18°</span>
+            <span class="extra-item"><i class="fas fa-umbrella"></i> 0%</span>
+          </div>
         </div>
         <div class="weather-details">
           <div class="detail-item">
@@ -100,92 +126,207 @@
               <div class="detail-label">Sunrise</div>
             </div>
           </div>
+          <div class="detail-item">
+            <i class="fas fa-moon"></i>
+            <div>
+              <div class="detail-value">08:45 PM</div>
+              <div class="detail-label">Sunset</div>
+            </div>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-cloud-rain"></i>
+            <div>
+              <div class="detail-value">0 mm</div>
+              <div class="detail-label">Precipitation</div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- 5-Day Forecast -->
-      <div class="weather-card forecast-container">
-        <h3 class="forecast-title">5-Day Forecast</h3>
+      <!-- New Cards Section -->
+      <div class="weather-card chart-container">
+        <h3>24-Hour Temperature Forecast</h3>
+        <canvas id="temperatureChart"></canvas>
+      </div>
+
+      <div class="weather-card uv-index-card">
+        <h3>UV Index & Sun Protection</h3>
+        <div class="uv-display">
+          <div class="uv-value">4.3</div>
+          <div class="uv-scale">
+            <div class="uv-segment low active"></div>
+            <div class="uv-segment moderate active"></div>
+            <div class="uv-segment high"></div>
+            <div class="uv-segment very-high"></div>
+            <div class="uv-segment extreme"></div>
+          </div>
+          <div class="uv-info">
+            <p>Moderate risk of harm from unprotected sun exposure</p>
+            <ul class="protection-tips">
+              <li><i class="fas fa-sun"></i> Wear sunscreen (SPF 30+)</li>
+              <li><i class="fas fa-glasses"></i> Wear sunglasses</li>
+              <li><i class="fas fa-hat-cowboy"></i> Wear a hat</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="weather-card health-card">
+        <h3>Health Recommendations</h3>
+        <div class="health-metrics">
+          <div class="health-item good">
+            <i class="fas fa-lungs"></i>
+            <div>
+              <div class="health-label">Air Quality</div>
+              <div class="health-value">Good</div>
+            </div>
+          </div>
+          <div class="health-item moderate">
+            <i class="fas fa-allergies"></i>
+            <div>
+              <div class="health-label">Pollen Count</div>
+              <div class="health-value">Moderate</div>
+            </div>
+          </div>
+          <div class="health-item good">
+            <i class="fas fa-wind"></i>
+            <div>
+              <div class="health-label">Humidity Comfort</div>
+              <div class="health-value">Comfortable</div>
+            </div>
+          </div>
+        </div>
+        <div class="health-recommendations">
+          <h4>Today's Recommendations</h4>
+          <ul>
+            <li>Good day for outdoor exercise</li>
+            <li>Pollen may affect allergy sufferers</li>
+            <li>Stay hydrated throughout the day</li>
+          </ul>
+        </div>
+      </div>
+
+
+
+      <div class="weather-card health-card">
+        <h3 class="section-title">Weather Impact & Safety Tips</h3>
+
+        <!-- Weather Impact Metrics -->
+        <div class="health-metrics">
+          <div class="health-item good">
+            <i class="fas fa-thermometer-half"></i>
+            <div>
+              <div class="health-label">Heat Index</div>
+              <div class="health-value">Moderate</div>
+            </div>
+          </div>
+          <div class="health-item moderate">
+            <i class="fas fa-wind"></i>
+            <div>
+              <div class="health-label">Wind Conditions</div>
+              <div class="health-value">Breezy</div>
+            </div>
+          </div>
+          <div class="health-item good">
+            <i class="fas fa-tint"></i>
+            <div>
+              <div class="health-label">Humidity</div>
+              <div class="health-value">Comfortable</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Safety Tips -->
+        <div class="health-recommendations">
+          <h4>Precautionary Measures</h4>
+          <ul>
+            <li><i class="fas fa-sun"></i> Apply SPF if outdoors</li>
+            <li><i class="fas fa-wind"></i> Avoid open areas during strong winds</li>
+            <li><i class="fas fa-glass-whiskey"></i> Drink plenty of water</li>
+          </ul>
+        </div>
+      </div>
+
+
+
+      <div class="weather-card health-card">
+        <h3 class="section-title">Outdoor Activity Index</h3>
+
+        <!-- Activity Conditions -->
+        <div class="health-metrics">
+          <div class="health-item good">
+            <i class="fas fa-biking"></i>
+            <div>
+              <div class="health-label">Exercise Suitability</div>
+              <div class="health-value">Excellent</div>
+            </div>
+          </div>
+          <div class="health-item moderate">
+            <i class="fas fa-tree"></i>
+            <div>
+              <div class="health-label">Park Conditions</div>
+              <div class="health-value">Fair</div>
+            </div>
+          </div>
+          <div class="health-item good">
+            <i class="fas fa-sun"></i>
+            <div>
+              <div class="health-label">UV Safety</div>
+              <div class="health-value">Low Risk</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tips -->
+        <div class="health-recommendations">
+          <h4>Suggested Actions</h4>
+          <ul>
+            <li><i class="fas fa-running"></i> Ideal time for jogging or cycling</li>
+            <li><i class="fas fa-cloud-sun"></i> Carry sunglasses for bright skies</li>
+            <li><i class="fas fa-bottle-water"></i> Keep a water bottle handy</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Enhanced Forecast Section -->
+      <div class="weather-card detailed-forecast">
+        <h3>Detailed 5-Day Forecast</h3>
         <div class="forecast-items">
           <div class="forecast-item">
             <div class="forecast-day">Tue</div>
+            <div class="forecast-date">Jun 4</div>
             <img src="https://openweathermap.org/img/wn/02d@2x.png" alt="Few clouds" class="forecast-icon">
             <div class="forecast-temp">25°C</div>
-          </div>
-          <div class="forecast-item">
-            <div class="forecast-day">Wed</div>
-            <img src="https://openweathermap.org/img/wn/03d@2x.png" alt="Scattered clouds" class="forecast-icon">
-            <div class="forecast-temp">23°C</div>
-          </div>
-          <div class="forecast-item">
-            <div class="forecast-day">Thu</div>
-            <img src="https://openweathermap.org/img/wn/09d@2x.png" alt="Shower rain" class="forecast-icon">
-            <div class="forecast-temp">20°C</div>
-          </div>
-          <div class="forecast-item">
-            <div class="forecast-day">Fri</div>
-            <img src="https://openweathermap.org/img/wn/10d@2x.png" alt="Rain" class="forecast-icon">
-            <div class="forecast-temp">18°C</div>
-          </div>
-          <div class="forecast-item">
-            <div class="forecast-day">Sat</div>
-            <img src="https://openweathermap.org/img/wn/01d@2x.png" alt="Clear sky" class="forecast-icon">
-            <div class="forecast-temp">22°C</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Additional Weather Cards -->
-      <div class="weather-card">
-        <h3>Air Quality</h3>
-        <div class="air-quality" style="margin-top: 1rem;">
-          <div style="display: flex; align-items: center; gap: 1rem;">
-            <div style="font-size: 2rem; font-weight: bold; color: #4CAF50;">42</div>
-            <div>
-              <div style="font-weight: 600;">Good</div>
-              <div style="font-size: 0.9rem; color: #666;">Air quality is satisfactory</div>
+            <div class="forecast-desc">Partly Cloudy</div>
+            <div class="forecast-precip">
+              <i class="fas fa-umbrella"></i> 10%
             </div>
           </div>
+          <!-- Repeat for other forecast days -->
         </div>
       </div>
 
-      <div class="weather-card">
+      <div class="weather-card hourly-forecast-card">
         <h3>Hourly Forecast</h3>
-        <div class="hourly-forecast" style="margin-top: 1rem;">
-          <div style="display: flex; overflow-x: auto; gap: 1rem; padding-bottom: 1rem;">
-            <div style="min-width: 60px; text-align: center;">
-              <div>Now</div>
-              <img src="https://openweathermap.org/img/wn/01d@2x.png" alt="Clear" style="width: 40px; height: 40px;">
-              <div style="font-weight: 600;">24°C</div>
-            </div>
-            <div style="min-width: 60px; text-align: center;">
-              <div>1 PM</div>
-              <img src="https://openweathermap.org/img/wn/01d@2x.png" alt="Clear" style="width: 40px; height: 40px;">
-              <div style="font-weight: 600;">26°C</div>
-            </div>
-            <div style="min-width: 60px; text-align: center;">
-              <div>2 PM</div>
-              <img src="https://openweathermap.org/img/wn/01d@2x.png" alt="Clear" style="width: 40px; height: 40px;">
-              <div style="font-weight: 600;">27°C</div>
-            </div>
-            <div style="min-width: 60px; text-align: center;">
-              <div>3 PM</div>
-              <img src="https://openweathermap.org/img/wn/02d@2x.png" alt="Few clouds"
-                style="width: 40px; height: 40px;">
-              <div style="font-weight: 600;">26°C</div>
-            </div>
-            <div style="min-width: 60px; text-align: center;">
-              <div>4 PM</div>
-              <img src="https://openweathermap.org/img/wn/02d@2x.png" alt="Few clouds"
-                style="width: 40px; height: 40px;">
-              <div style="font-weight: 600;">25°C</div>
-            </div>
-            <div style="min-width: 60px; text-align: center;">
-              <div>5 PM</div>
-              <img src="https://openweathermap.org/img/wn/03d@2x.png" alt="Scattered clouds"
-                style="width: 40px; height: 40px;">
-              <div style="font-weight: 600;">24°C</div>
-            </div>
+        <div class="hourly-container">
+          <div class="hourly-scroll">
+            <!-- Hourly items will be added by JS -->
+          </div>
+        </div>
+      </div>
+
+      <div class="weather-card weather-map">
+        <h3>Weather Map</h3>
+        <div class="map-container">
+          <div class="map-placeholder">
+            <i class="fas fa-map-marked-alt"></i>
+            <p>Interactive weather map</p>
+          </div>
+          <div class="map-controls">
+            <button class="map-btn active">Temperature</button>
+            <button class="map-btn">Precipitation</button>
+            <button class="map-btn">Wind</button>
+            <button class="map-btn">Satellite</button>
           </div>
         </div>
       </div>
@@ -194,27 +335,51 @@
     <!-- Weather Animation Elements -->
     <div class="weather-animation">
       <div class="sun"></div>
-      <!-- Clouds will be added dynamically by JS -->
     </div>
   </main>
 
-  <!-- Footer -->
   <footer>
-    <div class="footer-content">
-      <div class="social-links">
-        <a href="#"><i class="fab fa-facebook"></i></a>
-        <a href="#"><i class="fab fa-twitter"></i></a>
-        <a href="#"><i class="fab fa-instagram"></i></a>
-        <a href="#"><i class="fab fa-linkedin"></i></a>
+    <div class="footer-container">
+      <div class="footer-columns">
+        <div class="footer-column">
+          <h4>WeatherSphere</h4>
+          <a href="#">About Us</a>
+          <a href="#">Features</a>
+          <a href="#">Pricing</a>
+        </div>
+        <div class="footer-column">
+          <h4>Resources</h4>
+          <a href="#">Weather API</a>
+          <a href="#">Developers</a>
+          <a href="#">Documentation</a>
+        </div>
+        <div class="footer-column">
+          <h4>Support</h4>
+          <a href="#">Help Center</a>
+          <a href="#">Contact Us</a>
+          <a href="#">Feedback</a>
+        </div>
+        <div class="footer-column">
+          <h4>Connect</h4>
+          <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
       </div>
-      <p class="copyright">© 2023 WeatherSphere. All rights reserved.</p>
+
+      <div class="footer-bottom">
+        <p>© 2023 WeatherSphere Pro. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookie Policy</a>
+        </div>
+      </div>
     </div>
   </footer>
-
-
-  <!-- Google Maps Places API -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_PLACES_API_KEY&libraries=places"></script>
 
 </body>
 
