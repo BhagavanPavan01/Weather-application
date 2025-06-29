@@ -20,11 +20,11 @@
       <span>WeatherSphere Pro</span>
     </div>
     <div class="nav-links">
-      <a href="#" class="active">Dashboard</a>
-      <a href="#">Forecast</a>
+      <a href="#Dashboard" class="active">Dashboard</a>
+      <a href="#Alerts">Alerts</a>
+      <a href="#Health">Health</a>
+      <a href="#Forecast">Forecast</a>
       <a href="#">Maps</a>
-      <a href="#">Alerts</a>
-      <a href="#">Health</a>
     </div>
     <div class="nav-actions">
       <button id="themeToggle" class="toggle-btn">
@@ -40,7 +40,7 @@
   <!-- Main Content -->
   <main>
     <!-- Search Section -->
-    <section class="search-section">
+    <section class="search-section" id="Dashboard">
       <form id="searchForm" class="search-form">
         <div class="search-wrapper">
           <input type="text" id="cityInput" class="search-input" placeholder="Search for a city..." autocomplete="off">
@@ -65,7 +65,7 @@
       <div class="weather-card current-weather">
         <div class="weather-main">
           <div class="location-header">
-            <h2 class="weather-location">New York, US</h2>
+            <h2 class="weather-location">Vizianagaram, AP</h2>
             <div class="location-actions">
               <button class="icon-btn"><i class="far fa-bell"></i></button>
               <button class="icon-btn"><i class="far fa-star"></i></button>
@@ -143,6 +143,78 @@
         </div>
       </div>
 
+
+      <!-- Alert Section -->
+      <section class="alert-section" id="Alerts">
+        <div class="weather-card alert-card">
+          <div class="alert-header">
+            <h3><i class="fas fa-exclamation-triangle"></i> Weather Alerts</h3>
+            <div class="alert-actions">
+              <button class="icon-btn" id="refreshAlerts"><i class="fas fa-sync-alt"></i></button>
+              <button class="icon-btn" id="alertSettings"><i class="fas fa-cog"></i></button>
+            </div>
+          </div>
+
+          <div class="alert-container">
+            <!-- Active Alerts -->
+            <div class="alert-category">
+              <h4>Active Alerts</h4>
+              <div class="alert-item severe">
+                <div class="alert-icon">
+                  <i class="fas fa-bolt"></i>
+                </div>
+                <div class="alert-content">
+                  <div class="alert-title">Severe Thunderstorm Warning</div>
+                  <div class="alert-description">Severe thunderstorms expected in your area until 8:00 PM. Potential for
+                    damaging winds and hail.</div>
+                  <div class="alert-meta">
+                    <span class="alert-time">Issued: Today 2:30 PM</span>
+                    <span class="alert-expires">Expires: Today 8:00 PM</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Upcoming Alerts -->
+            <div class="alert-category">
+              <h4>Upcoming Alerts</h4>
+              <div class="alert-item moderate">
+                <div class="alert-icon">
+                  <i class="fas fa-umbrella"></i>
+                </div>
+                <div class="alert-content">
+                  <div class="alert-title">Heavy Rainfall Advisory</div>
+                  <div class="alert-description">Heavy rainfall expected tomorrow between 10:00 AM and 4:00 PM.
+                    Potential for localized flooding.</div>
+                  <div class="alert-meta">
+                    <span class="alert-time">Starts: Tomorrow 10:00 AM</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- No Alerts State -->
+            <div class="no-alerts" style="display: none;">
+              <i class="fas fa-check-circle"></i>
+              <p>No active weather alerts for your location</p>
+            </div>
+          </div>
+
+          <div class="alert-footer">
+            <button class="secondary-btn" id="viewAllAlerts">
+              <i class="fas fa-list"></i> View All Alerts
+            </button>
+            <button class="primary-btn" id="alertNotifications">
+              <i class="fas fa-bell"></i> Notification Settings
+            </button>
+          </div>
+        </div>
+      </section>
+
+
+
+
+
       <!-- New Cards Section -->
       <div class="weather-card chart-container">
         <h3>24-Hour Temperature Forecast</h3>
@@ -171,7 +243,7 @@
         </div>
       </div>
 
-      <div class="weather-card health-card">
+      <div class="weather-card health-card" id="Health">
         <h3>Health Recommendations</h3>
         <div class="health-metrics">
           <div class="health-item good">
@@ -289,7 +361,7 @@
       </div>
 
       <!-- Enhanced Forecast Section -->
-      <div class="weather-card detailed-forecast">
+      <div class="weather-card detailed-forecast" id="Forecast">
         <h3>Detailed 5-Day Forecast</h3>
         <div class="forecast-items">
           <div class="forecast-item">
